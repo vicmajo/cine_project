@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#^f%wy21kd6+7wlvd_!$v3k@*##(yemxyd5n1+f3ivl6p%al--'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -82,19 +82,60 @@ WSGI_APPLICATION = 'cine.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'railway',      # Nombre de tu BD
+    #     'USER': 'root',            # Usuario
+    #     'PASSWORD': 'FKIKKsdJDgazUQOoKxSaHEThfmtLDnzi',     # Contraseña (NO la raíz)
+    #     'HOST': 'monorail.proxy.rlwy.net',               # URL o IP
+    #     'PORT': '3306',                # Puerto
+    #     'OPTIONS': {
+    #         'ssl': {'ca': '/etc/ssl/cert.pem'},  # Necesario para Railway/Render
+    #         'charset': 'utf8mb4',
+    #     }
+    # }
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'nuevo_cine',
+    #     'USER': 'root',
+    #     'PASSWORD': 'vicmajo12',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    # },
+
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'cinevick',  # Nombre de tu BD
+    #     'USER': '8jhuwnc5glfxj7fhcztx',  # Copia el usuario que te muestra PlanetScale
+    #     'PASSWORD': 'pscale_pw_lPVcn8Qx9MUGZOxfpgSrP6aamAbO494JNjYWV6Omskw',  # La contraseña generada
+    #     'HOST': 'aws.connect.psdb.cloud',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'ssl': {'ca': '/etc/ssl/cert.pem'},  # ¡Obligatorio!
+    #         'charset': 'utf8mb4',
+    #     }
+
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nuevo_cine',
-        'USER': 'root',
-        'PASSWORD': 'vicmajo12',
-        'HOST': 'localhost',
+        'NAME': 'db16715',  # Nombre de tu BD
+        'USER': 'db16715',  # Copia el usuario que te muestra PlanetScale
+        'PASSWORD': '4c=EQ_2dg7X?',  # La contraseña generada
+        'HOST': 'db16715.public.databaseasp.net',
         'PORT': '3306',
+        'OPTIONS': {
+            'ssl': {'ca': '/etc/ssl/cert.pem'},  # ¡Obligatorio!
+            'charset': 'utf8mb4',
+        }
+
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
 }
+
+    
+   
+
 
 
 # Password validation
@@ -130,8 +171,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+import pathlib
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
