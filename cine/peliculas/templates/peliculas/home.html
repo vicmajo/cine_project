@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine XYZ - Experiencia Cinematográfica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #00c853;  /* Verde más vibrante */
+            --secondary-color: #1b5e20; /* Verde oscuro */
+            --gradient-green: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --light-bg: #f1f8e9;       /* Fondo claro verde pastel */
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-green);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .slogan {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 1rem;
+        }
+        
+        /* Navegación */
+        .nav-section {
+            background-color: rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-top: 1rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Secciones */
+        .section-title {
+            color: var(--secondary-color);
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-green);
+        }
+        
+        /* Tarjetas de películas */
+        .movie-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .movie-poster {
+            height: 350px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        .movie-genre {
+            background: var(--gradient-green);
+            color: white;
+        }
+        
+        /* Sección de alimentos */
+        .food-section {
+            background-color: white;
+            padding: 4rem 0;
+            margin: 3rem 0;
+        }
+        
+        .food-item {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .food-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .food-img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Sección Nosotros */
+        .about-section {
+            background: var(--gradient-green);
+            color: white;
+            padding: 4rem 0;
+            margin-top: 3rem;
+        }
+        
+        .about-card {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 30px;
+            backdrop-filter: blur(5px);
+            margin-bottom: 20px;
+        }
+        
+        /* Filtros */
+        .filter-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--gradient-green);
+            color: white;
+            padding: 3rem 0;
+            margin-top: auto;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: #d4edda;
+            transform: translateY(-3px);
+        }
+        
+        @media (max-width: 768px) {
+            .movie-poster {
+                height: 250px;
+            }
+            
+            .hero-section {
+                padding: 2rem 0 1rem;
+            }
+            
+            .slogan {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+            }
+            
+            .nav-link {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <h1 class="display-3 fw-bold">Cine XYZ</h1>
+            <p class="slogan">Donde las historias cobran vida</p>
+            
+            <!-- Navegación entre secciones -->
+            <div class="nav-section">
+                <div class="nav-links">
+                    <a href="#peliculas" class="nav-link active"><i class="bi bi-film"></i> Cartelera</a>
+                    <a href="#alimentos" class="nav-link"><i class="bi bi-cup-hot"></i> Alimentos</a>
+                    <a href="#nosotros" class="nav-link"><i class="bi bi-info-circle"></i> Nosotros</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <!-- Sección de Películas -->
+        <section id="peliculas">
+            <h2 class="section-title">Nuestra Cartelera</h2>
+            
+            <!-- Filtros -->
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="searchDate" class="form-label">Filtrar por fecha:</label>
+                        <input type="date" class="form-control" id="searchDate" value="{{ today }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="genreSelect" class="form-label">Filtrar por género:</label>
+                        <select class="form-select" id="genreSelect">
+                            <option value="">Todos los géneros</option>
+                            {% for genero in generos %}
+                                <option value="{{ genero.id }}">{{ genero.strDescripcion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100" id="filterBtn">
+                            <i class="bi bi-funnel"></i> Aplicar filtros
+                        </button>
+                        <button class="btn btn-outline-secondary w-100 mt-2" id="resetFilters">
+                            <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje cuando no hay resultados -->
+            <div id="noResults" class="alert alert-warning text-center">
+                <i class="bi bi-exclamation-triangle-fill"></i> No se encontraron películas con los filtros aplicados.
+            </div>
+
+            <!-- Cartelera -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="peliculasContainer">
+                {% for cartelera in carteleras %}
+                <div class="col pelicula-item" 
+                     data-fecha="{{ cartelera.idHorarios.dteFechaInicio|date:'Y-m-d' }}" 
+                     data-genero="{{ cartelera.idPelicula.idGenero.id }}">
+                    <div class="movie-card">
+                        <img src="{{ cartelera.idPelicula.strArchivoFtp }}" class="movie-poster" alt="{{ cartelera.idPelicula.strNombre }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cartelera.idPelicula.strNombre }}</h5>
+                            <p class="mb-2">
+                                <span class="badge movie-genre rounded-pill">
+                                    {{ cartelera.idPelicula.idGenero.strDescripcion }}
+                                </span>
+                            </p>
+                            
+                            <div class="schedule-info">
+                                <div class="schedule-item">
+                                    <i class="bi bi-calendar-date"></i>
+                                    <span>{{ cartelera.idHorarios.dteFechaInicio|date:"d/m/Y" }}</span>
+                                </div>
+                                <div class="schedule-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span>{{ cartelera.idHorarios.dteFechaInicio|time:"H:i" }} - {{ cartelera.idHorarios.dteFechaFin|time:"H:i" }}</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100 ver-mas" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modalDetalles"
+                                    data-nombre="{{ cartelera.idPelicula.strNombre }}"
+                                    data-sinopsis="{{ cartelera.idPelicula.strSinopsis }}"
+                                    data-imagen="{{ cartelera.idPelicula.strArchivoFtp }}"
+                                    data-video="{{ cartelera.idPelicula.strVideo }}"
+                                    data-anio="{{ cartelera.idPelicula.AnioEstreno }}"
+                                    data-duracion="{{ cartelera.idPelicula.duracionMint }}"
+                                    data-genero="{{ cartelera.idPelicula.idGenero.strDescripcion }}"
+                                    data-fechainicio="{{ cartelera.idHorarios.dteFechaInicio|date:'d/m/Y H:i' }}"
+                                    data-fechafin="{{ cartelera.idHorarios.dteFechaFin|date:'d/m/Y H:i' }}">
+                                <i class="bi bi-info-circle"></i> Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sección de Alimentos -->
+        <section class="food-section" id="alimentos">
+            <h2 class="section-title">Deliciosos Acompañamientos</h2>
+            
+            <div class="row">
+                <div class="col-md-3 col-6 food-item">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="food-img" alt="Palomitas">
+                    <h5>Palomitas Grandes</h5>
+                    <p class="text-muted">Crujientes y deliciosas</p>
+                </div>
+                <div class="col-md-3 col-6 food-item">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="food-img" alt="Hamburguesa">
+                    <h5>Combo Hamburguesa</h5>
+                    <p class="text-muted">Para los más hambrientos</p>
+                </div>
+                <div class="col-md-3 col-6 food-item">
+                    <img src="https://images.unsplash.com/photo-1554866585-cd94860890b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="food-img" alt="Bebidas">
+                    <h5>Bebidas Refrescantes</h5>
+                    <p class="text-muted">Variedad de sabores</p>
+                </div>
+                <div class="col-md-3 col-6 food-item">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="food-img" alt="Dulces">
+                    <h5>Variedad de Dulces</h5>
+                    <p class="text-muted">Para los más golosos</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Sección Nosotros -->
+    <section class="about-section" id="nosotros">
+        <div class="container">
+            <h2 class="section-title text-white">Sobre Nosotros</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="about-card">
+                        <h3><i class="bi bi-film"></i> Nuestra Misión</h3>
+                        <p>Cine XYZ nace con el propósito de ofrecer una experiencia cinematográfica única, combinando lo último en tecnología con el confort y servicio excepcional que nuestros clientes merecen.</p>
+                        <p class="mt-3">Desde 2025, hemos estado comprometidos con llevar los mejores estrenos y una experiencia inolvidable a nuestros visitantes.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="about-card">
+                        <h3><i class="bi bi-code-slash"></i> Sobre esta Aplicación</h3>
+                        <p>Esta plataforma fue desarrollada para modernizar la gestión y visualización de carteleras cinematográficas, ofreciendo a los usuarios una forma intuitiva de explorar las películas disponibles.</p>
+                        <div class="mt-4">
+                            <h5><i class="bi bi-person"></i> Creado por:</h5>
+                            <p>Equipo de Desarrollo Cine XYZ<br>
+                            Contacto: josevictormanuel619@yaou.com<br>
+                            Teléfono: +123 456 7890</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Detalles -->
+    <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalDetallesLabel">Detalles de la película</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img id="modalImagen" src="" class="img-fluid rounded mb-3" alt="">
+                        </div>
+                        <div class="col-md-7">
+                            <h3 id="modalTitulo"></h3>
+                            <p class="text-muted"><span id="modalAnio"></span> · <span id="modalDuracion"></span> min</p>
+                            
+                            <div class="mb-3">
+                                <span class="badge bg-primary rounded-pill" id="modalGenero"></span>
+                            </div>
+                            
+                            <h5 class="mt-4">Sinopsis</h5>
+                            <p id="modalSinopsis" class="mb-4"></p>
+                            
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <h5><i class="bi bi-clock-history"></i> Horario de función</h5>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <p><strong>Inicio:</strong> <span id="modalFechaInicio"></span></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Fin:</strong> <span id="modalFechaFin"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ratio ratio-16x9 mt-4">
+                        <iframe id="modalVideo" src="" title="Tráiler" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Cine XYZ</h5>
+                    <p>La mejor experiencia cinematográfica en tu ciudad.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Horarios</h5>
+                    <p>Lunes a Viernes: 2pm - 10pm<br>
+                    Sábados y Domingos: 10am - 11pm</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Síguenos</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-white">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Cine XYZ. Todos los derechos reservados.</p>
+                <a href="{% url 'index' %}" class="text-white">Área de administración</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const filterBtn = document.getElementById('filterBtn');
+            const resetBtn = document.getElementById('resetFilters');
+            const dateInput = document.getElementById('searchDate');
+            const genreSelect = document.getElementById('genreSelect');
+            const peliculasContainer = document.getElementById('peliculasContainer');
+            const noResultsMsg = document.getElementById('noResults');
+            const peliculasItems = document.querySelectorAll('.pelicula-item');
+            const verMasBtns = document.querySelectorAll('.ver-mas');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // Aplicar filtros
+            function aplicarFiltros() {
+                const selectedDate = dateInput.value;
+                const selectedGenre = genreSelect.value;
+                let hasResults = false;
+
+                peliculasItems.forEach(function(item) {
+                    const itemDate = item.getAttribute('data-fecha');
+                    const itemGenre = item.getAttribute('data-genero');
+                    
+                    // Verificar coincidencia con los filtros
+                    const dateMatch = !selectedDate || itemDate === selectedDate;
+                    const genreMatch = !selectedGenre || itemGenre === selectedGenre;
+                    
+                    if (dateMatch && genreMatch) {
+                        item.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Mostrar u ocultar mensaje de no resultados
+                noResultsMsg.style.display = hasResults ? 'none' : 'block';
+            }
+
+            // Limpiar filtros
+            function limpiarFiltros() {
+                dateInput.value = "{{ today }}";
+                genreSelect.value = "";
+                aplicarFiltros();
+            }
+
+            // Configurar eventos
+            filterBtn.addEventListener('click', aplicarFiltros);
+            resetBtn.addEventListener('click', limpiarFiltros);
+
+            // Configurar modal de detalles
+            verMasBtns.forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('modalTitulo').textContent = this.getAttribute('data-nombre');
+                    document.getElementById('modalSinopsis').textContent = this.getAttribute('data-sinopsis');
+                    document.getElementById('modalImagen').src = this.getAttribute('data-imagen');
+                    document.getElementById('modalAnio').textContent = this.getAttribute('data-anio');
+                    document.getElementById('modalDuracion').textContent = this.getAttribute('data-duracion') + ' minutos';
+                    document.getElementById('modalGenero').textContent = this.getAttribute('data-genero');
+                    document.getElementById('modalFechaInicio').textContent = this.getAttribute('data-fechainicio');
+                    document.getElementById('modalFechaFin').textContent = this.getAttribute('data-fechafin');
+                    
+                    const videoUrl = this.getAttribute('data-video');
+                    const videoFrame = document.getElementById('modalVideo');
+                    if (videoUrl) {
+                        videoFrame.src = videoUrl.includes('embed') ? 
+                            videoUrl : 
+                            videoUrl.replace("watch?v=", "embed/");
+                    } else {
+                        videoFrame.src = '';
+                    }
+                });
+            });
+
+            // Limpiar video al cerrar el modal
+            const modalDetalles = document.getElementById('modalDetalles');
+            if (modalDetalles) {
+                modalDetalles.addEventListener('hidden.bs.modal', function() {
+                    document.getElementById('modalVideo').src = '';
+                });
+            }
+
+            // Navegación suave
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    // Remover clase active de todos los links
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    
+                    // Agregar clase active al link clickeado
+                    this.classList.add('active');
+                    
+                    // Scroll suave al elemento
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Aplicar filtros al cargar la página
+            aplicarFiltros();
+        });
+    </script>
+</body>
+</html>

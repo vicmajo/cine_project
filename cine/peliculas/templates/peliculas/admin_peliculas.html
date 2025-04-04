@@ -1,0 +1,165 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Administración de Películas</h2>
+
+    <!-- Formulario para agregar/editar película -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <span id="form-title">Agregar Nueva Película</span>
+        </div>
+        <div class="card-body">
+            <form id="pelicula-form" method="POST" action="{% url 'agregar_pelicula' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="pelicula_id" id="pelicula_id">
+                <input type="hidden" name="imagen_actual" id="imagen_actual">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Nombre:</label>
+                        {{ form.strNombre }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Sinopsis:</label>
+                        {{ form.strSinopsis }}
+                    </div>
+                    <div class="col-md-4">
+                        <label>Año de Estreno:</label>
+                        {{ form.AnioEstreno }}
+                    </div>
+                    <div class="col-md-4">
+                        <label>Duración (min):</label>
+                        {{ form.duracionMint }}
+                    </div>
+                    <div class="col-md-4">
+                        <label>Género:</label>
+                        {{ form.idGenero }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Imagen:</label>
+                        <div id="imagen-previa" class="mb-2"></div>
+                        <input type="file" name="strArchivoFtp" class="form-control" id="imagen-input">
+                        <small class="form-text text-muted">Dejar en blanco para mantener la imagen actual</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Tráiler (YouTube):</label>
+                        {{ form.strVideo }}
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-guardar" class="btn btn-success mt-3">Agregar Película</button>
+                <button type="button" id="btn-cancelar" class="btn btn-secondary mt-3" style="display: none;">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de películas -->
+    <hr>
+    <div class="row justify-content-center">
+        {% for pelicula in peliculas %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-0" style="width: 100%; padding: 15px; background: #f8f9fa;">
+                <img src="{{ pelicula.strArchivoFtp }}" class="card-img-top img-fluid rounded" style="height: 300px;width: 100%;object-fit: contain;" alt="{{ pelicula.strNombre }}" onerror="this.src='https://via.placeholder.com/300x150?text=Imagen+no+disponible'">
+                <div class="card-body text-center">
+                    <h5 class="card-title font-weight-bold">{{ pelicula.strNombre }}</h5>
+                    <p class="card-text">{{ pelicula.strSinopsis|truncatechars:100 }}</p>
+                    <p><strong>Año:</strong> {{ pelicula.AnioEstreno }} | <strong>Duración:</strong> {{ pelicula.duracionMint }} min</p>
+                    <p><strong>Género:</strong> {{ pelicula.idGenero }}</p>
+
+                    <!-- Video (si existe) -->
+                    {% if pelicula.strVideo %}
+                    <div class="embed-responsive embed-responsive-16by9 mb-2">
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ pelicula.strVideo|slice:'32:' }}" allowfullscreen></iframe>
+                    </div>
+                    {% endif %}
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between">
+                        {% if pelicula.strVideo %}
+                        <a href="{{ pelicula.strVideo }}" target="_blank" class="btn btn-primary btn-sm">Ver Tráiler</a>
+                        {% endif %}
+                        <button class="btn btn-warning btn-sm btn-editar" 
+                                data-id="{{ pelicula.id }}"
+                                data-nombre="{{ pelicula.strNombre }}"
+                                data-sinopsis="{{ pelicula.strSinopsis }}"
+                                data-anio="{{ pelicula.AnioEstreno }}"
+                                data-duracion="{{ pelicula.duracionMint }}"
+                                data-genero="{{ pelicula.idGenero_id }}"
+                                data-imagen="{{ pelicula.strArchivoFtp }}"
+                                data-video="{{ pelicula.strVideo }}">
+                            Editar
+                        </button>
+                        <a href="{% url 'eliminar_pelicula' pelicula.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("pelicula-form");
+        const btnGuardar = document.getElementById("btn-guardar");
+        const btnCancelar = document.getElementById("btn-cancelar");
+        const formTitle = document.getElementById("form-title");
+        const imagenPrevia = document.getElementById("imagen-previa");
+        const imagenInput = document.getElementById("imagen-input");
+
+        // Vista previa de la imagen seleccionada
+        imagenInput.addEventListener("change", function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagenPrevia.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-height: 100px;">`;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        document.querySelectorAll(".btn-editar").forEach(btn => {
+            btn.addEventListener("click", function() {
+                // Llenar el formulario con los datos de la película
+                document.getElementById("pelicula_id").value = this.dataset.id;
+                document.getElementById("id_strNombre").value = this.dataset.nombre;
+                document.getElementById("id_strSinopsis").value = this.dataset.sinopsis;
+                document.getElementById("id_AnioEstreno").value = this.dataset.anio;
+                document.getElementById("id_duracionMint").value = this.dataset.duracion;
+                document.getElementById("id_idGenero").value = this.dataset.genero;
+                document.getElementById("id_strVideo").value = this.dataset.video;
+                document.getElementById("imagen_actual").value = this.dataset.imagen;
+
+                // Mostrar imagen previa
+                imagenPrevia.innerHTML = this.dataset.imagen ? 
+                    `<img src="${this.dataset.imagen}" class="img-thumbnail" style="max-height: 100px;">` : 
+                    "";
+
+                // Cambiar el título y botones
+                formTitle.innerText = "Editar Película";
+                btnGuardar.innerText = "Guardar Cambios";
+                btnCancelar.style.display = "inline-block";
+
+                // Cambiar la acción del formulario
+                form.action = `{% url 'editar_pelicula' 0 %}`.replace("0", this.dataset.id);
+            });
+        });
+
+        btnCancelar.addEventListener("click", function() {
+            // Resetear el formulario
+            form.reset();
+            document.getElementById("pelicula_id").value = "";
+            document.getElementById("imagen_actual").value = "";
+            imagenPrevia.innerHTML = "";
+
+            // Restaurar título y botones
+            formTitle.innerText = "Agregar Nueva Película";
+            btnGuardar.innerText = "Agregar Película";
+            btnCancelar.style.display = "none";
+
+            // Restaurar la acción original del formulario
+            form.action = `{% url 'agregar_pelicula' %}`;
+        });
+    });
+</script>
+
+{% endblock %}

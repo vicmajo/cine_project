@@ -1,0 +1,87 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-success text-center">Administrar Horarios</h2>
+
+    <!-- Tabla de horarios -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Fin</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horario in horarios %}
+                    <tr>
+                        <td>{{ horario.dteFechaInicio|date:"d/m/Y h:i A" }}</td>
+                        <td>{{ horario.dteFechaFin|date:"d/m/Y h:i A" }}</td>
+                        <td class="text-center">
+                            <!-- Botón Editar -->
+                            <a href="?edit={{ horario.id }}" class="btn btn-warning btn-sm">Editar</a>
+                            
+                            <!-- Formulario para eliminar -->
+                            <form method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ horario.id }}">
+                                <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulario para agregar o editar un horario -->
+    <div class="card mt-4 shadow">
+        <div class="card-header bg-success text-white">
+            <h3 class="mb-0">{% if horario_a_editar %}Editar Horario{% else %}Agregar Horario{% endif %}</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="horario_id" value="{{ horario_a_editar.id }}">
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha de Inicio:</label>
+                    <input type="text" class="form-control" name="dteFechaInicio" id="fecha_inicio" required 
+                           value="{{ horario_a_editar.dteFechaInicio|date:'d/m/Y h:i A' }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha de Fin:</label>
+                    <input type="text" class="form-control" name="dteFechaFin" id="fecha_fin" required 
+                           value="{{ horario_a_editar.dteFechaFin|date:'d/m/Y h:i A' }}">
+                </div>
+
+                <button type="submit" name="{% if horario_a_editar %}update{% else %}create{% endif %}" 
+                        class="btn btn-success w-100">
+                    {% if horario_a_editar %}Guardar cambios{% else %}Crear{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Flatpickr para seleccionar fecha y hora en español -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<script>
+    flatpickr("#fecha_inicio", {
+        enableTime: true,
+        dateFormat: "d/m/Y h:i K",
+        locale: "es"
+    });
+
+    flatpickr("#fecha_fin", {
+        enableTime: true,
+        dateFormat: "d/m/Y h:i K",
+        locale: "es"
+    });
+</script>
+{% endblock %}

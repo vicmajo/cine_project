@@ -1,0 +1,87 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-success text-center">Gestión de Salas</h2>
+
+    <!-- Formulario para agregar o editar una sala -->
+    <div class="card mt-3 shadow">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">{% if sala_a_editar %}Editar Sala{% else %}Agregar Sala{% endif %}</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'admin_salas' %}">
+                {% csrf_token %}
+                <input type="hidden" name="id" id="id_sala">
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <input type="text" class="form-control" name="strDescripcion" id="descripcion" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="cantidad_asientos" class="form-label">Cantidad de Asientos:</label>
+                    <input type="number" class="form-control" name="intCantidadAcientos" id="cantidad_asientos" required min="1">
+                </div>
+
+                <div class="mb-3">
+                    <label for="idestad" class="form-label">Estado:</label>
+                    <select class="form-select" name="idestad" id="idestad" required>
+                        {% for estado in estados %}
+                            <option value="{{ estado.id }}">{{ estado.strDescripcion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    {% if sala_a_editar %}Actualizar{% else %}Guardar{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de salas registradas -->
+    <div class="table-responsive mt-4">
+        <h3 class="text-center">Salas Registradas</h3>
+        <table class="table table-bordered table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Cantidad de Asientos</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sala in salas %}
+                <tr>
+                    <td>{{ sala.id }}</td>
+                    <td>{{ sala.strDescripcion }}</td>
+                    <td>{{ sala.intCantidadAcientos }}</td>
+                    <td>{{ sala.idEstado.strDescripcion }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning btn-sm" onclick="editarSala('{{ sala.id }}', '{{ sala.strDescripcion }}', '{{ sala.intCantidadAcientos }}', '{{ sala.idestad.id }}')">Editar</button>
+
+                        <form method="POST" action="{% url 'eliminar_sala' sala.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta sala?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function editarSala(id, descripcion, cantidad, idestad) {
+        document.getElementById('id_sala').value = id;
+        document.getElementById('descripcion').value = descripcion;
+        document.getElementById('cantidad_asientos').value = cantidad;
+        document.getElementById('idestad').value = idestad;
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-success text-center">Administrar Géneros de Películas</h2>
+
+    <!-- Formulario para crear o editar un género -->
+    <div class="card mt-3 shadow">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">{% if genero_a_editar %}Editar Género{% else %}Agregar Género{% endif %}</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="genero_id" value="{{ genero_a_editar.id }}">
+                
+                <div class="mb-3">
+                    <label class="form-label">Descripción del Género:</label>
+                    <input type="text" class="form-control" name="strDescripcion" required 
+                           value="{{ genero_a_editar.strDescripcion }}">
+                </div>
+
+                <button type="submit" name="{% if genero_a_editar %}update{% else %}create{% endif %}" 
+                        class="btn btn-success w-100">
+                    {% if genero_a_editar %}Actualizar{% else %}Agregar{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de géneros -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for genero in generos %}
+                <tr>
+                    <td>{{ genero.id }}</td>
+                    <td>{{ genero.strDescripcion }}</td>
+                    <td class="text-center">
+                        <!-- Botón Editar -->
+                        <a href="?edit={{ genero.id }}" class="btn btn-warning btn-sm">Editar</a>
+
+                        <!-- Formulario para eliminar -->
+                        <form method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ genero.id }}">
+                            <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

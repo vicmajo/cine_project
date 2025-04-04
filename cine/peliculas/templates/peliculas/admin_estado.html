@@ -1,0 +1,52 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-success text-center">Administrar Estados</h2>
+
+        <!-- Mostrar la lista de estados -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th>Descripción</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estado in estados %}
+                        <tr>
+                            <td>{{ estado.strDescripcion }}</td>
+                            <td class="text-center">
+                                <!-- Formulario para eliminar un estado -->
+                                <form method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ estado.id }}">
+                                    <button type="submit" name="delete" class="btn btn-danger btn-sm">
+                                         Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formulario para agregar un nuevo estado -->
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Agregar Estado</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}  <!-- Mostrar el formulario de creación -->
+                    <button type="submit" name="create" class="btn btn-success">
+                        Crear Estado
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

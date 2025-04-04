@@ -1,0 +1,206 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Administración de Cartelera</h2>
+
+    <!-- Formulario -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            {% if modo_edicion %}Editar{% else %}Agregar Nueva{% endif %} Función
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% if modo_edicion %}{% url 'editar_cartelera' cartelera_editar.id %}{% else %}{% url 'agregar_cartelera' %}{% endif %}">
+                {% csrf_token %}
+
+                <!-- Mostrar errores -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Película:</label>
+                        {{ form.idPelicula }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Sala:</label>
+                        {{ form.idSala }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Horario:</label>
+                        {{ form.idHorarios }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Estado:</label>
+                        {{ form.idEstado }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Hora de Inicio:</label>
+                        {{ form.HorarioInicio }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Hora de Fin:</label>
+                        {{ form.HorarioFin }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">
+                    {% if modo_edicion %}Guardar Cambios{% else %}Agregar{% endif %}
+                </button>
+                {% if modo_edicion %}
+                    <a href="{% url 'listar_cartelera' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Filtro de Estado -->
+    <div class="mb-4">
+        <label for="estadoFiltro"><strong>Filtrar por estado:</strong></label>
+        <select id="estadoFiltro" class="form-select">
+            <option value="todos">Todos</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+        </select>
+    </div>
+
+    <!-- Listado de Cartelera -->
+    <hr>
+    <div class="row justify-content-center" id="carteleraContainer">
+        {% for cartelera_item in cartelera %}
+        <div class="col-md-3 mb-4 pelicula-card" data-estado="{{ cartelera_item.idEstado }}">
+            <div class="card shadow-lg border-0">
+                <!-- Imagen -->
+                <img src="{{ cartelera_item.idPelicula.strArchivoFtp }}" class="card-img-top imagen-pelicula" alt="{{ cartelera_item.idPelicula.strNombre }}">
+
+                <div class="card-body text-center">
+                    <h5 class="card-title font-weight-bold">{{ cartelera_item.idPelicula.strNombre }}</h5>
+                    <p><strong>Género:</strong>
+                        <span class="badge bg-success text-white">
+                            {% if cartelera_item.idPelicula.idGenero %}
+                                {{ cartelera_item.idPelicula.idGenero.strDescripcion }}
+                            {% else %}
+                                Sin género
+                            {% endif %}
+                        </span>
+                    </p>
+
+                    <!-- Botón para Ver Detalles -->
+                    <button type="button" class="btn btn-success btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modal{{ cartelera_item.id }}">
+                        Ver detalles
+                    </button>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{% url 'editar_cartelera' cartelera_item.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_cartelera' cartelera_item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para detalles de la película -->
+        <div class="modal fade" id="modal{{ cartelera_item.id }}" tabindex="-1" aria-labelledby="modalLabel{{ cartelera_item.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel{{ cartelera_item.id }}">{{ cartelera_item.idPelicula.strNombre }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="{{ cartelera_item.idPelicula.strArchivoFtp }}" class="img-fluid" alt="{{ cartelera_item.idPelicula.strNombre }}">
+                            </div>
+                            <div class="col-md-8">
+                                <h6><strong>Género:</strong> <span class="badge bg-success text-white">
+                                    {% if cartelera_item.idPelicula.idGenero %}
+                                        {{ cartelera_item.idPelicula.idGenero.strDescripcion }}
+                                    {% else %}
+                                        Sin género
+                                    {% endif %}
+                                </span></h6>
+                                <h6><strong>Horario:</strong> {{ cartelera_item.idHorarios }}</h6>
+                                <h6><strong>Sala:</strong> {{ cartelera_item.idSala.strDescripcion }}</h6>
+                                <h6><strong>Inicio:</strong> {{ cartelera_item.HorarioInicio }} - <strong>Fin:</strong> {{ cartelera_item.HorarioFin }}</h6>
+                                <hr>
+                                <h6><strong>Sinopsis:</strong></h6>
+                                <p>{{ cartelera_item.idPelicula.strSinopsis }}</p>
+                                <h6><strong>Tráiler:</strong></h6>
+                                {% if cartelera_item.idPelicula.strVideo %}
+                                    <div class="embed-responsive embed-responsive-16by9 mb-2">
+                                        <iframe class="embed-responsive-item" src="{{ cartelera_item.idPelicula.strVideo }}" allowfullscreen></iframe>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- JavaScript para Filtrar por Estado -->
+<script>
+    document.getElementById("estadoFiltro").addEventListener("change", function() {
+        let estadoSeleccionado = this.value;
+        let peliculas = document.querySelectorAll(".pelicula-card");
+
+        peliculas.forEach(pelicula => {
+            let estadoPelicula = pelicula.getAttribute("data-estado");
+
+            if (estadoSeleccionado === "todos") {
+                pelicula.style.display = "block";
+            } else if (estadoSeleccionado === "activo" && estadoPelicula === "activo") {
+                pelicula.style.display = "block";
+            } else if (estadoSeleccionado === "inactivo" && estadoPelicula === "Inactivo") {
+                pelicula.style.display = "block";
+            } else {
+                pelicula.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<!-- Incluir Bootstrap si no lo tienes -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
+
+<!-- CSS adicional para asegurar cartas del mismo tamaño -->
+<style>
+    .imagen-pelicula {
+        object-fit: cover; /* Mantiene la proporción de la imagen, pero la ajusta para que no desborde */
+        width: 100%;
+        height: 200px; /* Ajusta la altura a un tamaño fijo */
+    }
+
+    .pelicula-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card-body {
+        flex-grow: 1; /* Hace que el cuerpo de la carta ocupe el espacio disponible */
+    }
+</style>
