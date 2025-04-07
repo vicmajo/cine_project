@@ -9,38 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* Estilos para el menú lateral */
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: rgb(21, 151, 58); /* Verde oscuro */
-            padding-top: 20px;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-        
-        .sidebar a {
-            display: block;
-            padding: 15px;
-            color: white;
-            text-decoration: none;
-        }
-
-        .sidebar a:hover {
-            background-color: rgb(21, 151, 58); /* Verde más claro */
-        }
-
-        /* Contenido principal */
-        .content {S
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
-
-        /* Contenedor del encabezado */
+        /* Estilos para el encabezado */
         .header {
             display: flex;
             align-items: center;
@@ -52,18 +21,16 @@
             top: 0;
             left: 0;
             z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* Botón de menú para móviles */
-        .menu-toggle {
-            display: none;
-            background-color: rgb(25, 97, 26);
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-right: 15px;
+        /* Contenedor del título y menú */
+        .header-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         /* Estilos del título */
@@ -73,69 +40,106 @@
             text-align: center;
         }
 
-        /* Responsivo: ocultar menú lateral en pantallas pequeñas */
+        /* Menú desplegable */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background-color: rgb(21, 151, 58);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 4px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Contenido principal */
+        .content {
+            padding: 20px;
+            margin-top: 80px; /* Ajuste para el header */
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 0;
-                overflow: hidden;
-                position: absolute;
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
             }
-            .content {
-                margin-left: 0;
+            
+            .header h1 {
+                text-align: left;
+                margin-bottom: 10px;
             }
-            .menu-toggle {
-                display: block;
+            
+            .dropdown {
+                width: 100%;
             }
-            .header {
-                justify-content: flex-start;
+            
+            .dropdown-content {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Encabezado con botón de menú y título -->
+    <!-- Encabezado con menú desplegable -->
     <div class="header">
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-        <h1>Panel de Administración</h1>
+        <div class="header-container">
+            <h1>Panel de Administración</h1>
+            
+            <div class="dropdown">
+                <button class="dropdown-btn">☰ Menú</button>
+                <div class="dropdown-content">
+                    <a href="{% url 'admin_estado' %}">Administrar Estados</a>
+                    <a href="{% url 'admin_horarios' %}">Administrar Horarios</a>
+                    <a href="{% url 'admin_generos' %}">Administrar Géneros</a>
+                    <a href="{% url 'admin_salas' %}">Administrar Salas</a>
+                    <a href="{% url 'listar_peliculas' %}">Administrar Películas</a>
+                    <a href="{% url 'listar_cartelera' %}">Administrar Cartelera</a>
+                    <a href="{% url 'home' %}">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Menú lateral -->
-    <nav class="sidebar" id="sidebar">
-        <a></a>
-        <a></a>
-        <a></a>
-        <a></a>
-        <a href="{% url 'admin_estado' %}">Administrar Estados</a>
-        <a href="{% url 'admin_horarios' %}">Administrar Horarios</a>
-        <a href="{% url 'admin_generos' %}">Administrar Géneros</a>
-        <a href="{% url 'admin_salas' %}">Administrar Salas</a>
-        <a href="{% url 'listar_peliculas' %}">Administrar Películas</a>
-        <a href="{% url 'listar_cartelera' %}">Administrar Cartelera</a>
-        <a href="{% url 'home' %}">Cerrar Sesión</a>
-        {% comment %} <a href="{% url 'logout' %}" >Cerrar sesión</a> {% endcomment %}
-    </nav>
 
     <!-- Contenido principal -->
     <div class="content">
-        <br><br><br> <!-- Espacio para evitar que el contenido se sobreponga con el encabezado -->
         {% block content %}
         {% endblock %}
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        function toggleMenu() {
-            var sidebar = document.getElementById("sidebar");
-            if (sidebar.style.width === "250px") {
-                sidebar.style.width = "0";
-            } else {
-                sidebar.style.width = "250px";
-            }
-        }
-    </script>
 
 </body>
 </html>

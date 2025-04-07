@@ -308,36 +308,19 @@ from .forms import PeliculaForm
 
 # Función para subir imágenes al servidor FTP y retornar la URL completa
 
-from django.conf import settings
-from ftplib import FTP
-import socket
-
 def subir_imagen_ftp(archivo, nombre_destino):
     try:
-        # Configuración mejorada para Render
-        ftp = FTP(
-            host=settings.FTP_HOST,
-            timeout=30  # Aumenta timeout para Render
-        )
-        ftp.set_pasv(True)  # ¡Obligatorio para Render!
-        ftp.login(
-            user=settings.FTP_USER,
-            passwd=settings.FTP_PASS
-        )
+        ftp = FTP(settings.FTP_HOST, timeout=10)
+        ftp.login(settings.FTP_USER, settings.FTP_PASS)
         ftp.cwd(settings.FTP_DIR)
 
-        # Subida con manejo de errores
-        with archivo.open('rb') as f:
-            ftp.storbinary(f'STOR {nombre_destino}', f, blocksize=8192)
+        with archivo.open("rb") as f:
+            ftp.storbinary(f"STOR {nombre_destino}", f)
 
         ftp.quit()
-        return f"{settings.FTP_URL.rstrip('/')}/{nombre_destino.lstrip('/')}"
-
-    except socket.timeout:
-        print("Error: Timeout de conexión FTP (aumenta 'timeout' en settings)")
-        return None
+        return f"{settings.FTP_URL}/{nombre_destino}"
     except Exception as e:
-        print(f"Error FTP completo: {str(e)}")
+        print(f"Error subiendo archivo FTP: {e}")
         return None
 
 # Vista para listar películas en admin_peliculas.html
@@ -492,7 +475,4 @@ def eliminar_cartelera(request, id):
     cartelera = get_object_or_404(Cartelera, id=id)
     cartelera.delete()
     return redirect(reverse('listar_cartelera'))
-
-
-
 
