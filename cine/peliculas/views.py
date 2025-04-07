@@ -308,19 +308,36 @@ from .forms import PeliculaForm
 
 # Función para subir imágenes al servidor FTP y retornar la URL completa
 
+from django.conf import settings
+from ftplib import FTP
+import socket
+
 def subir_imagen_ftp(archivo, nombre_destino):
     try:
-        ftp = FTP(settings.FTP_HOST, timeout=10)
-        ftp.login(settings.FTP_USER, settings.FTP_PASS)
+        # Configuración mejorada para Render
+        ftp = FTP(
+            host=settings.FTP_HOST,
+            timeout=30  # Aumenta timeout para Render
+        )
+        ftp.set_pasv(True)  # ¡Obligatorio para Render!
+        ftp.login(
+            user=settings.FTP_USER,
+            passwd=settings.FTP_PASS
+        )
         ftp.cwd(settings.FTP_DIR)
 
-        with archivo.open("rb") as f:
-            ftp.storbinary(f"STOR {nombre_destino}", f)
+        # Subida con manejo de errores
+        with archivo.open('rb') as f:
+            ftp.storbinary(f'STOR {nombre_destino}', f, blocksize=8192)
 
         ftp.quit()
-        return f"{settings.FTP_URL}/{nombre_destino}"
+        return f"{settings.FTP_URL.rstrip('/')}/{nombre_destino.lstrip('/')}"
+
+    except socket.timeout:
+        print("Error: Timeout de conexión FTP (aumenta 'timeout' en settings)")
+        return None
     except Exception as e:
-        print(f"Error subiendo archivo FTP: {e}")
+        print(f"Error FTP completo: {str(e)}")
         return None
 
 # Vista para listar películas en admin_peliculas.html
